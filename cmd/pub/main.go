@@ -44,5 +44,5 @@ func initMessagingService() (gmessaging.MessagingInterface, error) {
 		return nil, err
 	}
 	n := nat.Nat{ec}
-	return n, nil
+	return &n, nil
 }
