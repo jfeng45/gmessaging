@@ -1,9 +1,9 @@
 package main
 
-
 import (
 	"github.com/jfeng45/gmessaging"
-	"github.com/jfeng45/gmessaging/nat"
+	"github.com/jfeng45/gmessaging/config"
+	"github.com/jfeng45/gmessaging/factory"
 	"github.com/nats-io/nats.go"
 	"log"
 )
@@ -32,17 +32,7 @@ func main() {
 }
 
 func initMessagingService() (gmessaging.MessagingInterface, error) {
-	url := nats.DefaultURL
-	nc, err :=nats.Connect(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-	//defer nc.Close()
-	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
-	//defer ec.Close()
-	if err != nil {
-		return nil, err
-	}
-	n := nat.Nat{ec}
-	return &n, nil
+	config := config.Messaging{config.NATS_ENCODED, nats.DefaultURL, nats.JSON_ENCODER}
+	return factory.Build(&config)
 }
+

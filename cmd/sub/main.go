@@ -2,10 +2,11 @@ package main
 
 import (
 	"github.com/jfeng45/gmessaging"
-	"github.com/jfeng45/gmessaging/nat"
-	"github.com/nats-io/nats.go"
-	"log"
-	"runtime"
+	 "github.com/jfeng45/gmessaging/config"
+	 "github.com/jfeng45/gmessaging/factory"
+	 "github.com/nats-io/nats.go"
+	 "log"
+	 "runtime"
 )
 type PaymentEvent struct {
 	Id int
@@ -14,7 +15,7 @@ type PaymentEvent struct {
 
 func main() {
 	subject :="test"
-	mi, err := initMessagingService()
+	mi, err := InitMessagingService()
 	if err != nil {
 		log.Println("err:", err)
 	}
@@ -28,19 +29,7 @@ func main() {
 	runtime.Goexit()
 }
 
-func initMessagingService() (gmessaging.MessagingInterface, error) {
-	url := nats.DefaultURL
-	nc, err :=nats.Connect(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-	//defer nc.Close()
-	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
-	//defer ec.Close()
-	if err != nil {
-		return nil, err
-	}
-	n := nat.Nat{ec}
-	return &n, nil
-
+func InitMessagingService() (gmessaging.MessagingInterface, error) {
+	config := config.Messaging{config.NATS_ENCODED, nats.DefaultURL, nats.JSON_ENCODER}
+	return factory.Build(&config)
 }
