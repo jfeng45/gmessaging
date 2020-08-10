@@ -1,10 +1,7 @@
 package main
 
 import (
-	"github.com/jfeng45/gmessaging"
-	"github.com/jfeng45/gmessaging/config"
-	"github.com/jfeng45/gmessaging/factory"
-	"github.com/nats-io/nats.go"
+	"github.com/jfeng45/gmessaging/cmd"
 	"log"
 )
 
@@ -13,9 +10,13 @@ type PaymentEvent struct {
 	SourceAccount string
 }
 func main() {
-	subject :="test"
+	testEncoded()
+	//testNonEncoded()
+}
+func testEncoded() {
+	subject :="testEncoded"
 	p := PaymentEvent{1, "sourceAccount"}
-	mi, err := initMessagingService()
+	mi, err := cmd.InitMessagingEncodedService()
 	if err != nil {
 		log.Println("err:", err)
 	}
@@ -30,9 +31,24 @@ func main() {
 	mi.Close()
 	mi.CloseConnection()
 }
-
-func initMessagingService() (gmessaging.MessagingInterface, error) {
-	config := config.Messaging{config.NATS_ENCODED, nats.DefaultURL, nats.JSON_ENCODER}
-	return factory.Build(&config)
+func testNonEncoded() {
+	subject :="testNonEncoded"
+	//subject :="test"
+	msg := "123"
+	msgArr := []byte(msg)
+	mi, err := cmd.InitMessagingService()
+	if err != nil {
+		log.Println("err:", err)
+	}
+	err = mi.Publish(subject, msgArr)
+	if err != nil {
+		log.Println("err:", err)
+	}
+	err = mi.Flush()
+	if err != nil {
+		log.Println("err:", err)
+	}
+	mi.Close()
 }
+
 

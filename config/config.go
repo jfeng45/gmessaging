@@ -1,15 +1,15 @@
 package config
 
 type Messaging struct {
-	// log library name
+	// code for the implementation messaging lib
 	Code string `yaml:"code"`
-	// log level
+	// Server URL for the messaging server
 	ServerUrl string `yaml:"serverUrl"`
-	// show caller in log message
+	// Encoder will be used by the lib
 	Encoder string `yaml:"encoder"`
 }
 
 const (
-	NATS_ENCODED         string = "natsEncoded"
+	CODE_NATS         string = "codeNats"
 )
 
